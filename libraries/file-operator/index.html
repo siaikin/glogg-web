@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script src="dist/esm/bundle/index.js"></script>
+  </head>
+  <body>
+    <label>
+      <input id="file-select" type="file" />
+    </label>
+
+    <script>
+      const { BlobReaderFactory } = BLOB_READER_FACTORY;
+      const factory = BlobReaderFactory.getInstance({
+        baseUrl: "dist/esm/worker/bundle",
+        readerFragment: {
+          lines: 1024
+        }
+      });
+      const fileInput = document.getElementById("file-select");
+
+      fileInput.addEventListener("change", async () => {
+        const file = fileInput.files[0];
+        const reader = factory.getReader(file);
+
+        reader.addEventListener("blob-load-progress", ({message}) => {
+          console.log(message.data.loaded / message.data.total);
+        });
+
+        await reader.loaded;
+
+        // for (let i = 0; i < reader.size; i++) {
+        //   const f = reader.requestFragment(i);
+        //   const results = await f.toTextArray();
+        //
+        //   console.log(`
+        //   loadArrayBufferDuration: ${f.loadArrayBufferDuration},
+        //   decodeTextDuration: ${f.decodeTextDuration}
+        //   `);
+        // }
+      });
+      // (async function () {
+      //   const { ToolWorker } = TOOL_WORKER,
+      //     worker = new ToolWorker("dist/esm/worker/bundle/toolWorkerScript.js"),
+      //     fileInput = document.getElementById("file-select");
+      //
+      //   worker.addEventListener(
+      //     "find-line-separator-index-all-progress",
+      //     (ev) => {
+      //       const { indexes, searched, total } = ev.message.data;
+      //       console.log(
+      //         `${Math.floor(
+      //           (searched / total) * 100
+      //         )}%(${searched}/${total}), duration: ${ev.duration}ms`
+      //       );
+      //     }
+      //   );
+      //   worker.addEventListener(
+      //     "find-line-separator-index-all-result",
+      //     (ev) => {
+      //       console.log(ev);
+      //       // console.log(`${Math.floor(searched / total * 100)}%(${searched}/${total}), duration: ${ev.duration}ms`);
+      //     }
+      //   );
+      //
+      //   fileInput.addEventListener("change", async () => {
+      //     const file = fileInput.files[0];
+      //     const bytes = new Uint8Array(await file.arrayBuffer());
+      //
+      //     console.log(
+      //       await worker.findLineSeparatorIndexAll(bytes, 1024 * 10000)
+      //     );
+      //   });
+      // })();
+    </script>
+  </body>
+</html>

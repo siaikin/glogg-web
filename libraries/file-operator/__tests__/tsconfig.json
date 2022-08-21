@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "Node",
+    "target": "ES6",
+    "module": "ES2015",
+    "lib": ["ES6", "DOM"],
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "rootDirs": ["__tests__", "../lib"],
+    "allowJs": true
+  },
+  "exclude": ["node_modules"]
+}
