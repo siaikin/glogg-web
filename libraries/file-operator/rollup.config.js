@@ -4,7 +4,7 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import sourcemaps from "rollup-plugin-sourcemaps";
 import nodeBuiltins from "rollup-plugin-node-builtins";
 import { visualizer } from "rollup-plugin-visualizer";
-import { terser } from "rollup-plugin-terser";
+// import { terser } from "rollup-plugin-terser";
 import replace from "@rollup/plugin-replace";
 
 export default {
@@ -22,7 +22,7 @@ export default {
     nodeResolve(),
     commonjs(),
     nodeBuiltins(),
-    visualizer(),
+    visualizer({ filename: "./dist/stats.html" }),
     // terser(),
   ],
 };
