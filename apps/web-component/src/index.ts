@@ -1,2 +1,3 @@
 export * from "./glogg-view";
-export * from "./components/log-render";
+export * from "./log-render";
+export * from "./components/virtual-scroll";

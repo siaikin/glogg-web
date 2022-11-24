@@ -1,17 +1,12 @@
-import { Fragment } from "./Fragment";
 import { WorkerManager } from "./WorkerManager";
 import { Blob as NodeBlob } from "buffer";
-import { EventTarget, PartPartial } from "@siaikin/utils";
+import { EventTarget } from "@siaikin/utils";
 
 export class BlobReader extends EventTarget<BlobReaderEventListenerType> {
   constructor(options: BlobReaderOptions) {
     super();
     this._source = options.source;
     this._workerManager = options.workerManager;
-
-    this._config = {
-      fragmentOptions: options.fragmentOptions,
-    };
 
     this._loadedPromise = this._loadBlob().then(() => {
       this.state = BlobReaderLoadState.LOADED;
@@ -25,21 +20,20 @@ export class BlobReader extends EventTarget<BlobReaderEventListenerType> {
     });
   }
 
-  private readonly _fragmentList: Array<Fragment> = [];
-
   private readonly _loadedPromise: Promise<void>;
 
   private _source: Blob | NodeBlob;
 
   private _workerManager: WorkerManager;
 
-  private _config: {
-    fragmentOptions: BlobReaderFragmentOptions;
-  };
-
   state = BlobReaderLoadState.IDLE;
 
+  /**
+   * number of lines
+   */
   size = 0;
+
+  lineSeparatorList: Array<number> = [];
 
   get loaded(): Promise<void> {
     if (this.state !== BlobReaderLoadState.LOADED) {
@@ -47,10 +41,6 @@ export class BlobReader extends EventTarget<BlobReaderEventListenerType> {
     } else {
       return Promise.resolve();
     }
-  }
-
-  requestFragment(index: number): Fragment {
-    return this._fragmentList[index];
   }
 
   /**
@@ -96,59 +86,38 @@ export class BlobReader extends EventTarget<BlobReaderEventListenerType> {
      * convert line separator list to {@link Fragment} list.
      * {@link Fragment} just save reference({@link Blob}) of a part of file.
      */
-    const step = this._config.fragmentOptions.lines;
-    const len = lsIndexes.length;
+    // const step = this._config.fragmentOptions.lines;
+    // const len = lsIndexes.length;
 
-    for (let prevLSIndex = 0, startPosition = 0; prevLSIndex < len; ) {
-      const nextLSIndex = Math.min(prevLSIndex + step, lsIndexes.length) - 1;
-      const endPosition = lsIndexes[nextLSIndex] + 1;
-      const fragment = new Fragment(
-        this._source.slice(startPosition, endPosition),
-        nextLSIndex - prevLSIndex,
-        this._fragmentList.length,
-        worker
-      );
+    // for (let prevLSIndex = 0, startPosition = 0; prevLSIndex < len; ) {
+    //   const nextLSIndex = Math.min(prevLSIndex + step, lsIndexes.length) - 1;
+    //   const endPosition = lsIndexes[nextLSIndex] + 1;
+    //   const fragment = new Fragment(
+    //     this._source.slice(startPosition, endPosition),
+    //     nextLSIndex - prevLSIndex,
+    //     this._fragmentList.length,
+    //     worker
+    //   );
+    //
+    //   this._fragmentList.push(fragment);
+    //
+    //   startPosition = endPosition;
+    //   prevLSIndex += step;
+    // }
 
-      this._fragmentList.push(fragment);
-
-      startPosition = endPosition;
-      prevLSIndex += step;
-    }
-
-    this.size = this._fragmentList.length;
+    this.lineSeparatorList = lsIndexes;
+    this.size = lsIndexes.length;
   }
 }
 
 export class BlobReaderOptions {
-  constructor(options: PartPartial<BlobReaderOptions, "fragmentOptions">) {
+  constructor(options: BlobReaderOptions) {
     this.source = options.source;
     this.workerManager = options.workerManager;
-    this.fragmentOptions =
-      options.fragmentOptions || new BlobReaderFragmentOptions();
   }
 
   source: Blob | NodeBlob;
   workerManager: WorkerManager;
-  fragmentOptions: BlobReaderFragmentOptions;
-}
-
-export class BlobReaderFragmentOptions {
-  constructor(options: Partial<BlobReaderFragmentOptions> = {}) {
-    this.lines = options.lines || 48;
-  }
-
-  /**
-   * specifies the size of each fragment.
-   *
-   * see {@link lines} for default behaviors.
-   */
-  // size?: number;
-  /**
-   * specifies the lines of each fragment.
-   *
-   * if not specified, the default value is 48 lines.
-   */
-  lines: number;
 }
 
 export enum BlobReaderLoadState {

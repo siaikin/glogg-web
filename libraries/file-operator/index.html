@@ -30,6 +30,7 @@
 
         await reader.loaded;
 
+        console.log(reader.readLines(0, 999))
         // for (let i = 0; i < reader.size; i++) {
         //   const f = reader.requestFragment(i);
         //   const results = await f.toTextArray();
@@ -40,39 +41,6 @@
         //   `);
         // }
       });
-      // (async function () {
-      //   const { ToolWorker } = TOOL_WORKER,
-      //     worker = new ToolWorker("dist/esm/worker/bundle/toolWorkerScript.js"),
-      //     fileInput = document.getElementById("file-select");
-      //
-      //   worker.addEventListener(
-      //     "find-line-separator-index-all-progress",
-      //     (ev) => {
-      //       const { indexes, searched, total } = ev.message.data;
-      //       console.log(
-      //         `${Math.floor(
-      //           (searched / total) * 100
-      //         )}%(${searched}/${total}), duration: ${ev.duration}ms`
-      //       );
-      //     }
-      //   );
-      //   worker.addEventListener(
-      //     "find-line-separator-index-all-result",
-      //     (ev) => {
-      //       console.log(ev);
-      //       // console.log(`${Math.floor(searched / total * 100)}%(${searched}/${total}), duration: ${ev.duration}ms`);
-      //     }
-      //   );
-      //
-      //   fileInput.addEventListener("change", async () => {
-      //     const file = fileInput.files[0];
-      //     const bytes = new Uint8Array(await file.arrayBuffer());
-      //
-      //     console.log(
-      //       await worker.findLineSeparatorIndexAll(bytes, 1024 * 10000)
-      //     );
-      //   });
-      // })();
     </script>
   </body>
 </html>

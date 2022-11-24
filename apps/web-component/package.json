@@ -43,8 +43,8 @@
   "dependencies": {
     "lit": "^2.1.0",
     "eslint-plugin-prettier": "~4.0.0",
-    "@glogg-web/file-operator": "workspace:*",
-    "@siaikin/utils": "~1.1.0"
+    "@siaikin/utils": "~1.1.0",
+    "@glogg-web/file-operator": "workspace:*"
   },
   "devDependencies": {
     "@11ty/eleventy": "^0.12.1",

@@ -3,7 +3,7 @@ import { customElement, query, state } from "lit/decorators.js";
 import { html, unsafeStatic } from "lit/static-html.js";
 import { globalStyles } from "./global-styles";
 import { componentNameJoinPrefix, domIdJoinPrefix } from "./config/prefix";
-import { LOG_RENDER_COMPONENT_NAME } from "./components/log-render";
+import { LOG_RENDER_COMPONENT_NAME } from "./log-render";
 import { repeat } from "lit/directives/repeat.js";
 import { notUAN } from "@siaikin/utils";
 
@@ -19,6 +19,7 @@ export class GloggViewComponent extends LitElement {
         flex-direction: column;
         width: 100%;
         height: 100%;
+        font-size: 14px;
       }
       .log-render-wrapper {
         flex: 1 1 auto;

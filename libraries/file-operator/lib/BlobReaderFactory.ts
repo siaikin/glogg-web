@@ -1,11 +1,8 @@
 import { EventTarget } from "@siaikin/utils";
 import { WorkerManager, WorkerManagerOptions } from "./WorkerManager";
-import {
-  BlobReader,
-  BlobReaderFragmentOptions,
-  BlobReaderOptions,
-} from "./BlobReader";
+import { BlobReaderOptions } from "./BlobReader";
 import { Blob as NodeBlob } from "buffer";
+import { LineByLineBlobReader } from "./LineByLineBlobReader";
 
 export class BlobReaderFactory extends EventTarget {
   private static _instance?: BlobReaderFactory;
@@ -37,12 +34,11 @@ export class BlobReaderFactory extends EventTarget {
   private readonly _workerManager: WorkerManager;
   private _options: BlobReaderFactoryOptions;
 
-  getReader(source: Blob | NodeBlob): BlobReader {
-    return new BlobReader(
+  getReader(source: Blob | NodeBlob): LineByLineBlobReader {
+    return new LineByLineBlobReader(
       new BlobReaderOptions({
         source,
         workerManager: this._workerManager,
-        fragmentOptions: this._options.readerFragment,
       })
     );
   }
@@ -51,10 +47,5 @@ export class BlobReaderFactory extends EventTarget {
 export class BlobReaderFactoryOptions extends WorkerManagerOptions {
   constructor(options: Partial<BlobReaderFactoryOptions> = {}) {
     super(options);
-
-    this.readerFragment =
-      options.readerFragment || new BlobReaderFragmentOptions();
   }
-
-  readerFragment: BlobReaderFragmentOptions;
 }
